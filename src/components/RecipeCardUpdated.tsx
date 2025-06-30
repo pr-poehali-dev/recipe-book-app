@@ -30,6 +30,7 @@ export default function RecipeCard({
   onRecipeClick,
 }: RecipeCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Icon
@@ -46,7 +47,10 @@ export default function RecipeCard({
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+    <Card
+      className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+      onClick={() => onRecipeClick?.(id)}
+    >
       <div className="relative overflow-hidden">
         <img
           src={image}
@@ -60,8 +64,18 @@ export default function RecipeCard({
           variant="ghost"
           size="sm"
           className="absolute top-3 right-3 bg-white/90 hover:bg-white p-2 h-auto"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFavorite(id);
+          }}
         >
-          <Icon name="Heart" size={16} className="text-gray-600" />
+          <Icon
+            name="Heart"
+            size={16}
+            className={
+              isFavorite(id) ? "text-red-500 fill-current" : "text-gray-600"
+            }
+          />
         </Button>
       </div>
 
@@ -96,6 +110,10 @@ export default function RecipeCard({
             size="sm"
             variant="outline"
             className="text-purple-600 border-purple-600 hover:bg-purple-50"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRecipeClick?.(id);
+            }}
           >
             Посмотреть
           </Button>

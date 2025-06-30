@@ -21,6 +21,7 @@ const featuredRecipes = [
     category: "Паста",
   },
   {
+    id: "2",
     title: "Шоколадный фондан",
     description:
       "Невероятно нежный десерт с жидким шоколадным центром. Идеально для романтического ужина.",
@@ -32,6 +33,7 @@ const featuredRecipes = [
     category: "Десерты",
   },
   {
+    id: "3",
     title: "Азиатский вок с курицей",
     description:
       "Яркое блюдо с овощами и курицей в ароматном соусе. Здорово, вкусно и быстро.",
@@ -43,6 +45,7 @@ const featuredRecipes = [
     category: "Азиатская",
   },
   {
+    id: "4",
     title: "Минестроне с базиликом",
     description:
       "Питательный овощной суп с бобовыми и макаронами. Классика итальянской кухни.",
@@ -54,6 +57,7 @@ const featuredRecipes = [
     category: "Супы",
   },
   {
+    id: "5",
     title: "Классический цезарь",
     description:
       "Хрустящие листья романо, анчоусы, пармезан и классическая заправка. Лучший салат всех времен.",
@@ -65,6 +69,7 @@ const featuredRecipes = [
     category: "Салаты",
   },
   {
+    id: "6",
     title: "Курица в медово-горчичной глазури",
     description:
       "Сочная курица с золотистой корочкой и невероятно ярким вкусом. Просто в приготовлении.",
@@ -78,6 +83,20 @@ const featuredRecipes = [
 ];
 
 const Index = () => {
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleRecipeClick = (recipeId: string) => {
+    setSelectedRecipe(recipeId);
+    // В реальном приложении здесь был бы переход на страницу рецепта
+    console.log("Открываем рецепт:", recipeId);
+  };
+
+  const handleFiltersChange = (filters: any) => {
+    console.log("Фильтры изменены:", filters);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -105,6 +124,8 @@ const Index = () => {
               <Input
                 placeholder="Поиск рецептов..."
                 className="pl-10 pr-4 py-3 text-lg"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Icon
                 name="Search"
@@ -112,6 +133,17 @@ const Index = () => {
                 size={20}
               />
             </div>
+          </div>
+
+          <div className="flex items-center justify-center mb-8">
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="mr-4"
+            >
+              <Icon name="Filter" size={16} className="mr-2" />
+              {showFilters ? "Скрыть фильтры" : "Показать фильтры"}
+            </Button>
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -149,6 +181,15 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Filters */}
+      {showFilters && (
+        <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-t">
+          <div className="max-w-4xl mx-auto">
+            <RecipeFilters onFiltersChange={handleFiltersChange} />
+          </div>
+        </section>
+      )}
+
       {/* Featured Recipes */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -166,13 +207,65 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredRecipes.map((recipe, index) => (
-              <RecipeCard key={index} {...recipe} />
+            {featuredRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                {...recipe}
+                onRecipeClick={handleRecipeClick}
+              />
             ))}
           </div>
 
           <div className="text-center mt-8 sm:hidden">
             <Button variant="outline">Смотреть все рецепты</Button>
+          </div>
+        </div>
+      </section>
+
+      {/* My Notes Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-purple-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+            Мои кулинарные заметки
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Сохраняйте любимые рецепты, делайте заметки и создавайте собственную
+            коллекцию
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <Icon
+                name="Heart"
+                className="mx-auto mb-3 text-red-500"
+                size={24}
+              />
+              <h3 className="font-semibold mb-2">Избранные рецепты</h3>
+              <p className="text-sm text-gray-600">
+                Сохраняйте понравившиеся рецепты одним кликом
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <Icon
+                name="StickyNote"
+                className="mx-auto mb-3 text-yellow-500"
+                size={24}
+              />
+              <h3 className="font-semibold mb-2">Личные заметки</h3>
+              <p className="text-sm text-gray-600">
+                Добавляйте свои комментарии и изменения к рецептам
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <Icon
+                name="ShoppingCart"
+                className="mx-auto mb-3 text-green-500"
+                size={24}
+              />
+              <h3 className="font-semibold mb-2">Список покупок</h3>
+              <p className="text-sm text-gray-600">
+                Автоматически создавайте списки ингредиентов
+              </p>
+            </div>
           </div>
         </div>
       </section>
